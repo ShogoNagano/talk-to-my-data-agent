@@ -150,14 +150,14 @@ async def load_from_database_callback() -> None:
         and st.session_state.selected_schema_tables
     ):
         with st.sidebar:
-            with st.spinner("Loading selected tables..."):
+            with st.spinner("選択されたデータをロード中..."):
                 dataframes = await Database.get_data(
                     *st.session_state.selected_schema_tables,
                     analyst_db=st.session_state.analyst_db,
                 )
 
                 if not dataframes:
-                    st.error(f"Failed to load data from {app_infra.database}")
+                    st.error(f"データのロードに失敗しました {app_infra.database}")
                     return
 
                 async for message in process_data_and_update_state(
@@ -173,14 +173,14 @@ async def uploaded_file_callback(uploaded_files: list[UploadedFile]) -> None:
     # Set flag to indicate data source is a file
     st.session_state.data_source = DataSourceType.FILE
 
-    with st.spinner("Loading and processing files..."):
+    with st.spinner("ファイルのロードと処理中..."):
         # Process uploaded files
         for file in uploaded_files:
             if file.file_id not in st.session_state.processed_file_ids:
-                logger.info("Processing Uploaded Files")
+                logger.info("アップロードされたファイルの処理中")
                 log_memory()
                 dataset_results = await process_uploaded_file(file)
-                logger.info("Initiating Data cleansing and dictionary")
+                logger.info("データのクレンジングと辞書の作成を開始中")
                 log_memory()
                 async for message in process_data_and_update_state(
                     dataset_results,
@@ -188,7 +188,7 @@ async def uploaded_file_callback(uploaded_files: list[UploadedFile]) -> None:
                     st.session_state.data_source,
                 ):
                     st.toast(message)
-                logger.info("Done with processing files")
+                logger.info("ファイルの処理が完了しました")
                 log_memory()
                 st.session_state.processed_file_ids.append(file.file_id)
 
@@ -214,7 +214,7 @@ async def main() -> None:
     await state_init()
     logger.info("Starting App")
     with st.sidebar:
-        st.title("Connect")
+        st.title("接続")
 
         # Load Files expander containing file upload and AI Catalog
         with st.expander("Load Files", expanded=True):
@@ -223,7 +223,7 @@ async def main() -> None:
             with col1:
                 st.image("csv_File_Logo.svg", width=25)
             with col2:
-                st.write("**Load Data Files**")
+                st.write("**データファイルのロード**")
             uploaded_files = st.file_uploader(
                 "Select 1 or multiple files",
                 type=["csv", "xlsx", "xls"],
@@ -234,18 +234,18 @@ async def main() -> None:
                 await uploaded_file_callback(uploaded_files)
 
             # AI Catalog section
-            st.subheader("☁️   DataRobot AI Catalog")
+            st.subheader("☁️   DataRobot AIカタログ")
 
             # Get datasets from catalog
 
-            with st.spinner("Loading datasets from AI Catalog..."):
+            with st.spinner("AIカタログからデータをロード中..."):
                 with st.session_state.datarobot_connect.use_user_token():
                     datasets = [i.model_dump() for i in st_list_catalog_datasets()]
 
             # Create form for dataset selection
             with st.form("catalog_selection_form", border=False):
                 selected_catalog_datasets = st.multiselect(
-                    "Select datasets from AI Catalog",
+                    "データセットからAIカタログを選択する",
                     options=datasets,
                     format_func=lambda x: f"{x['name']} ({x['size']})",
                     help="You can select multiple datasets",
@@ -254,17 +254,17 @@ async def main() -> None:
 
                 # Form submit button
                 submit_button = st.form_submit_button(
-                    "Load Datasets",
+                    "データセットのロード",
                 )
 
                 # Process form submission
                 if submit_button and len(selected_catalog_datasets) > 0:
                     await catalog_download_callback()
                 elif submit_button:
-                    st.warning("Please select at least one dataset")
+                    st.warning("最低限一つのデータセットを選択してください")
 
         # Database expander
-        with st.expander("Database", expanded=False):
+        with st.expander("データベース", expanded=False):
             get_database_logo(app_infra)
 
             schema_tables = st_list_database_tables()
@@ -292,7 +292,7 @@ async def main() -> None:
 
         # Add Clear Data button after the Database expander
         if st.sidebar.button(
-            "Clear Data",
+            "データの削除",
             on_click=clear_data_callback,
             type="secondary",
             use_container_width=False,
@@ -302,7 +302,7 @@ async def main() -> None:
 
     # Main content area
     display_page_logo()
-    st.title("Explore")
+    st.title("データの探索")
     if "analyst_db" not in st.session_state:
         st.warning("Could not identify user, please provide your API token")
         return
@@ -326,7 +326,7 @@ async def main() -> None:
                     cleaning_report = ds_display_cleansed.cleaning_report
 
                     # Display cleaning report in expander
-                    with st.expander("View Cleaning Report"):
+                    with st.expander("クリーニングレポートを閲覧する"):
                         # Group reports by conversion type
                         conversions: defaultdict[str, list[CleansedColumnReport]] = (
                             defaultdict(list)
@@ -340,7 +340,7 @@ async def main() -> None:
 
                         # Display summary of changes
                         if conversions:
-                            st.write("### Summary of Changes")
+                            st.write("### 変更点の概要")
                             for conv_type, reports in conversions.items():
                                 columns_count = len(reports)
                                 st.write(
@@ -370,14 +370,14 @@ async def main() -> None:
                                             for error in report.errors:
                                                 st.markdown(f"- {error}")
                         else:
-                            st.info("No columns were modified during cleaning")
+                            st.info("クリーニングで変更されたカラムはありません")
 
                         # Show unchanged columns
                         unchanged = [
                             r for r in cleaning_report if not r.conversion_type
                         ]
                         if unchanged:
-                            st.write("### Unchanged Columns")
+                            st.write("### 変更されなかったカラム")
                             st.write(
                                 ", ".join(f"`{r.new_column_name}`" for r in unchanged)
                             )

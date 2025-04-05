@@ -378,7 +378,7 @@ async def main() -> None:
             clear_chat()
     # Sidebar with New Chat button only
     with st.sidebar:
-        st.title("Chat Controls")
+        st.title("チャットコントロール")
 
         if app_infra.database != "no_database":
 
@@ -401,18 +401,18 @@ async def main() -> None:
 
         # Chat History in expander
         if len(all_datasets) > 0:
-            with st.expander("Available Datasets", expanded=True):
+            with st.expander("利用可能なデータセット", expanded=True):
                 for dataset_name in all_datasets:
                     st.checkbox(dataset_name, key=f"dataset_{dataset_name}", value=True)
 
             st.divider()
         st.checkbox(
-            "Generate charts in conversation",
+            "グラフを生成を有効にする",
             value=True,
             key="enable_chart_generation",
         )
         st.checkbox(
-            "Enable business insights and follow up questions in conversation",
+            "ビジネスインサイトとフォローアップ質問を有効にする",
             value=True,
             key="enable_business_insights",
         )
@@ -425,14 +425,14 @@ async def main() -> None:
 
         with col1:
             st.button(
-                "New Chat",
+                "新しいチャット",
                 on_click=clear_chat,
                 use_container_width=True,
                 type="primary",
             )
         with col2:
             if st.button(
-                "Save Chat",
+                "チャットを保存する",
                 use_container_width=True,
                 type="secondary",
             ):
@@ -449,9 +449,9 @@ async def main() -> None:
 
         # List all saved chats
         if len(all_chats) == 0:
-            st.write("No saved chats available.")
+            st.write("保存されたチャットはありません")
         else:
-            st.subheader("Saved Chats")
+            st.subheader("保存されたチャット")
             for chat in all_chats:
                 chat_id = chat["id"]
                 chat_name = chat["name"]
@@ -514,7 +514,7 @@ async def main() -> None:
         # Current chat info at the bottom
         if st.session_state.current_chat_name:
             st.divider()
-            st.caption(f"Current chat: {st.session_state.current_chat_name}")
+            st.caption(f"現在のチャット: {st.session_state.current_chat_name}")
         st.divider()
 
     st.session_state.chat_messages = cast(
@@ -522,7 +522,7 @@ async def main() -> None:
     )
     if not st.session_state.datasets_names and not st.session_state.chat_messages:
         st.info(
-            "Please upload and process data using the sidebar before starting the chat"
+            "チャットを開始する前に、サイドバーでデータをアップロード・処理してください"
         )
     else:
         # Render existing chat history
@@ -544,7 +544,7 @@ async def main() -> None:
                 renderer.render_message(message, within_chat_context=True)
         # Handle new chat input
         if question := st.chat_input(
-            "Ask a question about your data",
+            "データに関する質問をしてみてください",
         ):
             # Create and add user message
             user_message = AnalystChatMessage(
