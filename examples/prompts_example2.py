@@ -21,7 +21,7 @@ Write a short description for each column that will help an analyst effectively 
 CONTEXT:
 You will receive the following:
 1) The first 10 rows of a dataframe
-2) A summary of the data computed using pandas .describe()
+2) A summary of the data computed using polars.describe()
 3) For categorical data, a list of the unique values limited to the top 10 most frequent values.
 
 CONSIDERATIONS:
@@ -198,7 +198,7 @@ NECESSARY CONSIDERATIONS:
 - You may perform advanced analysis using statsmodels, scipy, numpy, polars and scikit-learn.
 - If the user mentions anything about charting, plotting or graphing the data, you do not need to include code to actually visualize the data. You only need to ensure that the data will be available in the dataframe for downstream analysis and charting later. 
 - Please try to be memory efficient if the data is large (more than 1M rows)
-- Strict requirement: Do not use the pandas library for any part of the implementation. The input data will always be provided as a Polars DataFrame, and all data operations must use the Polars API exclusively.
+- Strict requirement: Do not use the polars library for any part of the implementation. The input data will always be provided as a Polars DataFrame, and all data operations must use the Polars API exclusively.
 
 
 REATTEMPT:
@@ -316,25 +316,25 @@ So for example, you could make 2 complementary figures by having an aggregated v
 CONTEXT:
 You will be given:
 1. A business question
-2. A pandas DataFrame containing the data relevant to the question
+2. A polars DataFrame containing the data relevant to the question
 3. Metadata about the columns in the dataframe to help you choose the right chart type and properly construct the chart using plotly without making mistakes. You may only reference column names that actually are listed in the metadata!
 
 YOUR RESPONSE:
 Your response must be a Python function that returns 2 plotly.graph_objects.Figure objects.
-Your function will accept a pandas DataFrame as input.
+Your function will accept a polars DataFrame as input.
 Respond with JSON with the following fields:
 1) code: A string of python code that will execute and return 2 Plotly visualizations.
 2) description: A brief description of how the code works, and how the results can be interpreted to answer the question.
 
 FUNCTION REQUIREMENTS:
 Name: create_charts()
-Input: A pandas DataFrame containing the data relevant to the question
+Input: A polars DataFrame containing the data relevant to the question
 Output: A dictionary containing two plotly.graph_objects.Figure objects
 Import required libraries within the function.
 
 EXAMPLE CODE STRUCTURE:
 def create_charts(df):
-    import pandas as pd
+    import polars as pl
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
      
@@ -347,12 +347,12 @@ def create_charts(df):
     }
 
 NECESSARY CONSIDERATIONS:
-The input df is a pandas DataFrame that is described by the included metadata
+The input df is a polars DataFrame that is described by the included metadata
 Choose visualizations that effectively display the data and complement each other
 ONLY REFER TO COLUMNS THAT ACTUALLY EXIST IN THE METADATA.
 When using subplots, only use subplots for 4 or fewer categories.
 You must never refer to columns that will not exist in the input dataframe.
-When referring to columns in your code, spell them EXACTLY as they appear in the pandas dataframe according to the provided metadata - this might be different from how they are referenced in the business question! 
+When referring to columns in your code, spell them EXACTLY as they appear in the polars dataframe according to the provided metadata - this might be different from how they are referenced in the business question! 
 For example, if the question asks "What is the total amount paid ("AMTPAID") for each type of order?" but the metadata does not contain "AMTPAID" but rather "TOTAL_AMTPAID", you should use "TOTAL_AMTPAID" in your code because that's the column name in the data.
 Data Availability: If some data is missing, plot what you can in the most sensible way.
 Package Imports: If your code requires a package to run, such as statsmodels, numpy, scipy, etc, you must import the package within your function.
