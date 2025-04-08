@@ -133,7 +133,7 @@ YOUR RESPONSE:
 Your response shall only contain a Python function called analyze_data(dfs) that takes a dictionary of dataframes as input and returns the relevant data as a single dataframe.
 Your response shall be formatted as JSON with the following fields:
 1) code: A string of python code that will execute and return a single polars dataframe wrapped in a dictionary with key "data".
-2) description: A brief description of how the code works, and how the results can be interpreted to answer the question.
+2) Description: Please provide a clear and thorough explanation in Japanese of how the code works and how its results help answer the question. The explanation should be written in simple and accessible language so that even people without a programming background can easily understand it. Feel free to be detailed and even somewhat redundant, as the goal is to ensure clarity and completeness.
 
 For example:
 
