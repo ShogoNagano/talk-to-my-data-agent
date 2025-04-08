@@ -425,14 +425,14 @@ async def main() -> None:
 
         with col1:
             st.button(
-                "新しいチャット",
+                "新規チャット",
                 on_click=clear_chat,
                 use_container_width=True,
                 type="primary",
             )
         with col2:
             if st.button(
-                "チャットを保存する",
+                "チャット保存",
                 use_container_width=True,
                 type="secondary",
             ):

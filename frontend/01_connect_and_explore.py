@@ -217,7 +217,7 @@ async def main() -> None:
         st.title("接続")
 
         # Load Files expander containing file upload and AI Catalog
-        with st.expander("Load Files", expanded=True):
+        with st.expander("ファイルのロード", expanded=True):
             # File upload section
             col1, col2, col3 = st.columns([1, 4, 2])
             with col1:
@@ -314,7 +314,7 @@ async def main() -> None:
         st.info("Upload and process your data using the sidebar to get started")
     else:
         for ds_display_name in dataset_names:
-            tab1, tab2 = st.tabs(["Raw Data", "Data Dictionary"])
+            tab1, tab2 = st.tabs(["生データ", "データディクショナリー"])
             with tab1:
                 ds_display = await analyst_db.get_dataset(ds_display_name)
                 st.subheader(f"{ds_display.name}")
@@ -472,7 +472,7 @@ async def main() -> None:
 
                     with col3:
                         if st.button(
-                            label="Save changes",
+                            label="変更を保存する",
                             key=f"dict_save_{dictionary.name}",
                             use_container_width=True,
                         ):
@@ -487,7 +487,7 @@ async def main() -> None:
                         # Download button for dictionary
                         csv = edited_df.write_csv()
                         st.download_button(
-                            label="Download Data Dictionary",
+                            label="データディクショナリーをダウンロードする",
                             data=csv,
                             file_name=f"{dictionary.name}_dictionary.csv",
                             mime="text/csv",
