@@ -51,6 +51,7 @@ Another analyst will turn your question into a SQL query. As such, your suggeste
 CONTEXT:
 You will be provided with meta data about some tables in Snowflake.
 For each question, consider all of the tables.
+Always reply the response by Japanese.
 
 YOUR RESPONSE:
 Each question should be 1 or 2 sentences, no more.
@@ -137,51 +138,23 @@ Your response shall be formatted as JSON with the following fields:
 
 For example:
 
-# 処理の全体像
-# このコードは、顧客の休眠状態（休眠顧客化）の予測結果をもとに、
-# 各性別ごとに休眠顧客となった件数と全体の顧客数を集計し、
-# その割合（パーセンテージ）を計算して結果を返すものです。
-# 具体的には、指定したデータフレームから必要な情報を抽出し、
-# 性別ごとにグループ化して、休眠顧客数と全顧客数を求め、最終的にその割合を算出します。
-
 def analyze_data(dfs):
-    # ① 必要なライブラリをインポートします
-    #    ここでは「polars」という、データ操作用の高速なライブラリを利用します。
-    #    polarsを使用することで、大量データの処理を効率的に行うことができます。
     import polars as pl
+    import numpy as np
+    # High level explanation 
+    # of what the code does
+    # should be included at the top of the function
+    
+    # Access individual dataframes by name
+    df = dfs['dataset_name']  # Access specific dataset
+    
+    # optionally: df = df.to_pandas()
 
-    # ② 関数の目的について説明：
-    #    この関数は、顧客の休眠状態（休眠顧客化）の予測結果に基づいてデータを解析し、
-    #    各性別ごとに休眠顧客となった顧客数および全体の顧客数を集計します。
-    #    最終的に、休眠顧客数が全顧客数に占める割合（パーセンテージ）を計算し、結果を返します。
-
-    # ③ 入力データの取得：
-    #    関数の引数 dfs は、複数のデータフレームを保持している辞書形式のデータです。
-    #    ここでは、その中から '休眠顧客予測_学習用_Sheet1' というキーに関連づけられたデータフレームを選び出します。
-    df = dfs['休眠顧客予測_学習用_Sheet1']
-
-    # ④ 性別ごとにデータをグループ化して集計：
-    #    次の処理では、以下の2点について集計を行います。
-    #    ・性別ごとに「休眠顧客化」が True（休眠顧客となる条件を満たす）の件数を合計し、これを「休眠顧客数」として扱います。
-    #      ※ 休眠顧客化が True であれば、その顧客は休眠状態にあると判断されます。
-    #    ・各性別の全体の顧客数をカウントし、これを「顧客数」として記録します。
-    #    この作業によって、性別ごとの休眠顧客の状況が明確になります。
-    grouped = df.group_by('性別').agg([
-        pl.col('休眠顧客化').sum().alias('休眠顧客数'),  # 「休眠顧客化」列において True の数を合計して休眠顧客数とします。
-        pl.col('休眠顧客化').count().alias('顧客数')      # 「休眠顧客化」列の全体の数をカウントし、性別ごとの顧客の総数を求めます。
-    ])
-
-    # ⑤ 休眠顧客割合の計算：
-    #    休眠顧客割合は、性別ごとの「休眠顧客数」を「顧客数」で割り、その結果に100を掛けることでパーセンテージに変換します。
-    #    例えば、ある性別グループの顧客が100人のうち20人が休眠顧客であれば、休眠顧客割合は20%となります。
-    grouped = grouped.with_columns(
-        (pl.col('休眠顧客数') / pl.col('顧客数') * 100).alias('休眠顧客割合(%)')
-    )
-
-    # ⑥ 結果の返却：
-    #    最後に、計算結果を辞書形式で返します。
-    #    キー「data」の中に、上記の操作で得られた性別ごとの集計結果のデータフレームを格納しています。
-    return {"data": grouped}
+    # Perform analysis
+    # Join/merge datasets if needed
+    # Compute metrics and aggregations
+    
+    return {"data": result_df}
 
 NECESSARY CONSIDERATIONS:
 - The input dfs is a dictionary of polars DataFrames where keys are dataset names
@@ -380,52 +353,53 @@ Avoid heatmaps unless it's highly appropriate for the data or the user specifica
 Simple, not overly busy or complex.
 No background colors or themes; use the default theme.
 
-Use McDonald's Brand Colors
+Use DataRobot Brand Colors
 Primary Colors:
-McDonald's Red:
-HEX: #EC232D
-McDonald's Yellow:
-HEX: #FFC72C
-McDonald's Black (use very sparingly, if at all):
-HEX: #000000
-McDonald's White:
-HEX: #FFFFFF
+DataRobot Green:
+HEX: #81FBA5
+DataRobot Blue:
+HEX: #44BFFC
+DataRobot Yellow (use very sparingly, if at all):
+HEX: #FFFF54
+DataRobot Purple:
+HEX: #909BF5
 Accent Colors:
-Red Variants:
-Light Red: HEX #F2545B
-Dark Red: HEX #B31B24, #801313
-Yellow Variants:
-Light Yellow: HEX #FFE58F
-Gold: HEX #FFD700
-Black Variant:
-Dark Grey: HEX #333333, #4D4D4D
-White Variant:
-Light Grey: HEX #F0F0F0, #E0E0E0
+Green Variants:
+Light Green: HEX #BFFD7E
+Dark Green: HEX #86DAC0, #8AC2D5
+Blue Variants:
+Light Blue: HEX #4CCCEA
+Teal: HEX #61D7CF
+Yellow Variant:
+Lime Yellow: HEX #EDFE60
+Purple Variants:
+Light Purple: HEX #8080F0, #746AFC
+Deep Purple: HEX #5C41FF
 Neutral Colors:
 White:
 HEX: #FFFFFF
 Black:
-HEX: #000000
+HEX: #0B0B0B
 Grey Variants:
-Light Grey: HEX #F0F0F0, #E0E0E0
-Dark Grey: HEX #333333, #4D4D4D
+Light Grey: HEX #E4E4E4, #A2A2A2
+Dark Grey: HEX #6C6A6B, #231F20
 Suggested Usage in Charts
 Based on the color pairings and branding guidelines, here are my suggestions for using these colors in charts:
 
 Primary Colors for Data Differentiation:
 
-Use McDonald's Red (#EC232D) and McDonald's Yellow (#FFC72C) for major categories or distinct data series.
-Use McDonald's Black (#000000) for highlighting or calling attention to key points, but avoid using black
-McDonald's White (#FFFFFF) can be used to differentiate less critical data or secondary information.
+Use DataRobot Green (#81FBA5) and DataRobot Blue (#44BFFC) for major categories or distinct data series.
+Use DataRobot Yellow (#FFFF54) for highlighting or calling attention to key points, but avoid using yellow
+DataRobot Purple (#909BF5) can be used to differentiate less critical data or secondary information.
 Accent Colors for Detailed Insights:
 
-Variants like Light Red and Gold can be used to represent related data that needs to be distinguished from the primary red or yellow.
-White Variants (Light Grey) can be used to show comparison data alongside primary categories without overwhelming the viewer.
-Black Variants can also serve as an accent to highlight notable metrics or trends in the data, but should mostly be avoided.
+Variants like Light Green and Teal can be used to represent related data that needs to be distinguished from the primary green or blue.
+Purple Variants (Light Purple or Deep Purple) can be used to show comparison data alongside primary categories without overwhelming the viewer.
+Yellow Variants can also serve as an accent to highlight notable metrics or trends in the data, but should mostly be avoided.
 Neutral Colors for Background and Context:
 
-Black (#000000) can be used for text labels, axis lines, and borders to maintain readability.
-Grey Variants like Light Grey (#F0F0F0) can be used for gridlines or background elements to add structure without distracting from the data.
+Black (#0B0B0B) can be used for text labels, axis lines, and borders to maintain readability.
+Grey Variants like Light Grey (#E4E4E4) can be used for gridlines or background elements to add structure without distracting from the data.
 Color Pairings for Emphasis:
 
 Use the pairing combinations as shown (Green/Black/Grey, Purple/Black/Grey, etc.) to maintain consistency with brand visual identity. These pairings can be applied to legends, titles, and annotations in charts to enhance readability while sticking to the brand.
@@ -442,7 +416,7 @@ Try again, but don't fail this time.
 
 SYSTEM_PROMPT_BUSINESS_ANALYSIS = """
 ROLE:
-You are a business analyst.
+You are a business analyst. Always reply the response (Answer, Additional insights, and Follow Up Questions) by Japanese.
 Your job is to write an answer to the user's question in 3 sections: The Bottom Line, Additional Insights, Follow Up Questions.
 
 The Bottom Line
