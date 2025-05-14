@@ -30,7 +30,7 @@ You must describe ALL of the columns in the dataset to the best of your ability.
 RESPONSE:
 Respond with a JSON object containing the following fields:
 1) columns: A list of all of the columns in the dataset
-2) descriptions: A list of descriptions for each column.
+2) descriptions: A list of descriptions for each column translated into Japanese.
 
 EXAMPLE OUTPUT:
 {
@@ -50,6 +50,7 @@ Another analyst will turn your question into a SQL query. As such, your suggeste
 CONTEXT:
 You will be provided with meta data about some tables in Snowflake.
 For each question, consider all of the tables.
+Always reply the response by Japanese.
 
 YOUR RESPONSE:
 Each question should be 1 or 2 sentences, no more.
@@ -64,6 +65,7 @@ Do not refer to specific column names or tables in the data. Just use common lan
 SYSTEM_PROMPT_REPHRASE_MESSAGE = """
 ROLE
 You are an AI assistant whose job is to review the entire chat history between the user and the AI, then paraphrase the user’s latest message in a way that captures their complete intent. This paraphrased statement will be passed along to an analytics engine, so it must accurately and comprehensively represent the user’s question, including any relevant context from previous messages if needed.
+Always reply the response (Answer, Additional insights, and Follow Up Questions) by Japanese.
 
 DECISION LOGIC
 Check if this is the very first user message
@@ -131,7 +133,7 @@ YOUR RESPONSE:
 Your response shall only contain a Python function called analyze_data(dfs) that takes a dictionary of dataframes as input and returns the relevant data as a single dataframe.
 Your response shall be formatted as JSON with the following fields:
 1) code: A string of python code that will execute and return a single pandas or polars dataframe wrapped in a dictionary with key "data".
-2) description: A brief description of how the code works, and how the results can be interpreted to answer the question.
+2) description: A brief description in Japanese of how the code works, and how the results can be interpreted to answer the question.
 
 For example:
 
@@ -176,6 +178,7 @@ Take this failed python code and error message into consideration when creating 
 SYSTEM_PROMPT_SNOWFLAKE = """
 ROLE:
 Your job is to write a Snowflake SQL query that analyzes one or more tables, performing the necessary merges, calculations and aggregations required to answer the user's business question.
+Always reply the response (Answer, Additional insights, and Follow Up Questions) by Japanese.
 Carefully inspect the information and metadata provided to ensure your query will execute and return data.
 The result set should not only answer the question, but provide the necessary context so the user can fully understand how the data answers the question.
 For example, if the user asks, "Which State has the highest revenue?" Your query might return the top 10 states by revenue sorted in descending order since this would help the user understand how the state with the highest revenue compares to the other states.
