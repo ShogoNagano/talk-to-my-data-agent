@@ -443,22 +443,36 @@ investigate using other data in the dataset, and propose analytics strategies to
 Use markdown to format your response for readability. While you might organize this content into sections, don't use headings with large
 
 Follow Up Questions
-Offer 2 or 3 follow up questions the user could ask to get deeper insight into the issue in another round of question and answer.
-When you word these questions, do not use pronouns to refer to the data - always use specific column names. Only refer to data that 
-that is described in the data dictionary. For example, don't refer to "sales volume" if there is no "sales volume" column.
+以下の JSON を厳密に踏襲してください。  
+質問は pronoun を避け、データ辞書に存在する列名を必ず明示します。  
+追加データ取得を前提にしないでください（既存データのみで検証可能に限定）。  
 
-CONTEXT:
-The user has provided a business question and a dataset containing information relevant to the question.
-You will also be provided with a data dictionary that describes the underlying data from which this dataset was derived. 
-Based solely on the content within the provided data dictionary, you may suggest analysing other data that might be relevant or helpful for shedding more light on the topic raised by the user.
-Do not suggest analysing data outside of the scope of this data dictionary.
+### ■ 出力例（必ず同じ構造・日本語で返すこと）
 
-YOUR RESPONSE:
-Your response should be output as a JSON object with the following fields:
-1) bottom_line: A concise answer to the user's question in plain language, tailored for someone with a business background rather than a technical one. Formatted in markdown.
-2) additional_insights: A discussion of the underlying reasons or causes for the answer in "The Bottom Line" section. This section, while still business focused, should go a level deeper to help the user understand a possible root cause. Formatted in markdown.
-3) follow_up_questions: A list of 3 helpful follow up questions that would lead to deeper insight into the issue in another round of analysis. When you word these questions, do not use pronouns to refer to the data - always use specific column names. Only refer to data that actually exists in the provided dataset. For example, don't refer to "sales volume" if there is no "sales volume" column.
+"follow_up_questions": {
+  "business": [
+    { "hypothesis": "[ビジネス観点]仮説1 平均購入金額(一年)が高い顧客ほど解約率が低い可能性がある。", 
+      "question": "[ビジネス観点]質問1 平均購入金額(一年)と解約フラグのクロス集計を確認できますか？" },
+    { "hypothesis": "[ビジネス観点]仮説2 特定の商品カテゴリの購入頻度が高い顧客は追加購入を期待できる。", 
+      "question": "[ビジネス観点]質問2 商品カテゴリと平均購入金額(一年)の関係を可視化できますか？" },
+    { "hypothesis": "[ビジネス観点]仮説3 キャンペーンメール開封率が高い顧客は平均ウェブ訪問時間(分)も長い傾向がある。", 
+      "question": "[ビジネス観点]質問3 キャンペーンメール開封率と平均ウェブ訪問時間(分)の相関を調べられますか？" }
+  ],
+  "tech": [
+    { "hypothesis": "[データサイエンス観点]仮説1 平均ウェブ訪問時間(分)に欠損があると分析結果が偏る恐れがある。", 
+      "question": "[データサイエンス観点]質問1  平均ウェブ訪問時間(分)の欠損率と欠損パターンを確認できますか？" },
+    { "hypothesis": "[データサイエンス観点]仮説2 平均購入金額(一年)に外れ値が含まれると平均値が歪む。", 
+      "question": "[データサイエンス観点]質問2  平均購入金額(一年)の外れ値を箱ひげ図で確認できますか？" },
+    { "hypothesis": "[データサイエンス観点]仮説3 平均お気に入り商品数と平均商品ページ訪問回数は高相関で冗長の可能性がある。", 
+      "question": "[データサイエンス観点]質問3  両列のピアソン相関係数を計算できますか？" }
+  ]
+}
 
+### ■ 埋めるべき箇所
+上記の「hypothesis」「question」本文を、実データに沿った日本語１文へ置き換えて返してください。  
+キー名・角括弧 [ビジネス観点] などのラベルは **必ずそのまま** 出力に含めてください。  
+
+ 
 """
 SYSTEM_PROMPT_SAP_DATASPHERE = """
 ROLE:
